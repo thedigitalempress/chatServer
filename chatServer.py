@@ -5,7 +5,7 @@ def server():
     host = "localhost"
 
     comms_socket = socket.socket()
-    comms_socket.bind(('localhost', 50000))
+    comms_socket.bind((host, port))
 
     print("Waiting for a chat at ", host, "on port ", port)
 
@@ -22,40 +22,37 @@ def server():
         send_data = ""
         connection.close()
 
-    def client():
-        global port 
-        host = input ("Enter the host you want to communicate" + " with(leave blank for localhost) ")
+def client():
+    global port
+    host = input("Enter the host you want to communicate with (leave blank for localhost ")
+    if host == "":
+        host = "localhost"
 
-        if host == "":
-            host = "localhost"
+    comms_socket = socket.socket()
 
-            comms_socket = socket.socket()
-
-            print("Starting chat with  ", host, " on port ", port)
-            comms_socket.connect((host, port))
-            while True:
-                send_data = input ("message: ")
-                comms_socket.send(bytes(send_data, "UTF-8"))
-                print(comms_socket.recv(4096).decode("UTF-8"))
-
-    port = int(input("Enter the port you want to communicate on" + " (0 for default)"))
-
-    if port == 0:
-        port = 50000
+    print("Starting a chat with ", host, " on port ", port)
+    comms_socket.connect((host, port))
     while True:
-        print("Your options are:")
-        print("1 - wait for chat")
-        print("3 - exit")
+        send_data = input("message: ")
+        comms_socket.send(bytes(send_data, "UTF-8"))
+        print(comms_socket.recv(4096).decode("UTF-8"))
 
-        option = int (input("option :"))
+port = int(input("Enter the port you want to communicate on (0 for default)"))
+if port == 0:
+    port = 50000
+while True:
+    print("Your options are:")
+    print("1 - wait for a chat")
+    print("2 - initiate a chat")
+    print("3 - exit")
 
-        if option == 1:
-            server()
-        elif option == 2:
-            client()
-        elif option == 3:
-            break
-        else:
-            print("I dont recognise that option")
-            
-    
+    option = int(input("option :"))
+
+    if option == 1:
+        server()
+    elif option == 2:
+        client()
+    elif option == 3:
+        break
+    else:
+        print("I don't recognise that option")
